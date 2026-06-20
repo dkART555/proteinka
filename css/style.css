@@ -51,12 +51,7 @@ body{
 
 .logo{
     display:block;
-}
-
-.logo img{
-    height:80px;
-    width:auto;
-    display:block;
+    text-decoration:none;
 }
 
 .logo-wrap{
@@ -68,12 +63,15 @@ body{
 
 .logo-sun{
     width:120px;
+    height:auto;
+    display:block;
     animation:sun-spin 60s linear infinite;
 }
 
 .logo-text{
     width:350px;
     height:auto;
+    display:block;
 }
 
 @keyframes sun-spin{
@@ -562,7 +560,16 @@ body{
         width:100%;
     }
 
-    .logo img{
+    .logo-wrap{
+        width:100%;
+    }
+
+    .logo-sun{
+        width:80px;
+        height:auto;
+    }
+
+    .logo-text{
         width:100%;
         max-width:500px;
         height:auto;
@@ -574,8 +581,18 @@ body{
 
     .hero-content{
         flex-direction:column;
+        gap:35px;
     }
 
+    .hero-image{
+        order:1;
+        width:100%;
+    }
+
+    .hero-text{
+        order:2;
+        width:100%;
+    }
     .hero-text h1{
         font-size:36px;
     }
