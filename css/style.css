@@ -44,8 +44,9 @@ body{
 
 .header-inner{
     display:flex;
-    justify-content:space-between;
+    flex-direction:column;
     align-items:center;
+    gap:15px;
 }
 
 .logo{
@@ -53,8 +54,31 @@ body{
 }
 
 .logo img{
-    height:42px;
+    height:80px;
+    width:auto;
     display:block;
+}
+
+.logo-wrap{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:10px;
+}
+
+.logo-sun{
+    width:120px;
+    animation:sun-spin 60s linear infinite;
+}
+
+.logo-text{
+    width:350px;
+    height:auto;
+}
+
+@keyframes sun-spin{
+    from{transform:rotate(0deg);}
+    to{transform:rotate(360deg);}
 }
 
 .btn{
@@ -529,8 +553,19 @@ body{
         gap:16px;
     }
 
+    .header .btn{
+        width:100%;
+        text-align:center;
+    }
+
+    .logo{
+        width:100%;
+    }
+
     .logo img{
-        height:40px;
+        width:100%;
+        max-width:500px;
+        height:auto;
     }
 
     .hero{
@@ -592,34 +627,34 @@ body{
     }
 
     .order-constructor{
-    padding:18px;
-}
+        padding:18px;
+    }
 
-.constructor-table{
-    gap:8px;
-}
+    .constructor-table{
+        gap:8px;
+    }
 
-.constructor-row{
-    grid-template-columns:1.15fr 0.85fr 0.85fr 0.85fr;
-    gap:6px;
-    align-items:center;
-}
+    .constructor-row{
+        grid-template-columns:1.15fr 0.85fr 0.85fr 0.85fr;
+        gap:6px;
+        align-items:center;
+    }
 
-.constructor-head{
-    display:grid;
-    font-size:14px;
-}
+    .constructor-head{
+        display:grid;
+        font-size:14px;
+    }
 
-.constructor-row > div{
-    font-size:14px;
-    font-weight:700;
-}
+    .constructor-row > div{
+        font-size:14px;
+        font-weight:700;
+    }
 
-.constructor-row input{
-    padding:10px 6px;
-    font-size:15px;
-    border-radius:10px;
-    text-align:center;
-}
+    .constructor-row input{
+        padding:10px 6px;
+        font-size:15px;
+        border-radius:10px;
+        text-align:center;
+    }
 
 }
