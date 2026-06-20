@@ -13,7 +13,7 @@
     --cream:#f7f0e6;
     --cream-dark:#efe3d2;
     --card:#fffaf3;
-    --text:rgb(78, 40, 12);
+    --text:#c9923c;
     --muted:#6f5a45;
 }
 
@@ -89,6 +89,7 @@ body{
 
 .hero-text{
     flex:1;
+    color:#f7c069;
 }
 
 .hero-text h1{
@@ -100,7 +101,7 @@ body{
 .hero-text p{
     font-size:20px;
     margin-bottom:30px;
-    color:#f0dcc0;
+    color:#c9923c;
 }
 
 .hero-image{
@@ -243,6 +244,16 @@ body{
 .delivery-card p{
     color:var(--muted);
     line-height:1.5;
+}
+
+.benefit-card img,
+.audience-card img,
+.usage-card img{
+    width:70%;
+    max-width:120px;
+    height:auto;
+    display:block;
+    margin:0 auto 20px;
 }
 
 .flavor-image{
@@ -539,7 +550,8 @@ body{
     }
 
     .image-box-main{
-        height:200px;
+        aspect-ratio:3/2;
+        height:auto;
     }
 
     .benefits h2,
@@ -561,6 +573,14 @@ body{
     .packs-grid,
     .delivery-grid{
         grid-template-columns:1fr;
+    }
+
+    .benefit-card img,
+    .audience-card img,
+    .usage-card img{
+        width:30%;
+        max-width:100px;
+        height:auto;
     }
 
     .about-content{
