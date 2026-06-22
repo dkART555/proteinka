@@ -563,6 +563,33 @@ body{
     color:var(--dark);
 }
 
+.rating{
+    display:flex;
+    flex-direction:row-reverse;
+    justify-content:center;
+    gap:8px;
+}
+
+.rating input{
+    display:none;
+}
+
+.rating label{
+    font-size:48px;
+    color:#d7c6ae;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.rating label:hover,
+.rating label:hover ~ label{
+    color:var(--gold);
+}
+
+.rating input:checked ~ label{
+    color:var(--gold);
+}
+
 @media(max-width:768px){
 
     .header-inner{

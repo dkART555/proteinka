@@ -107,13 +107,22 @@ textarea{
 <div class="question">
 <h3>1. Наскільки вам сподобався смак прототипу?</h3>
 
-<div class="option-group">
+<div class="rating">
 
-<label><input type="radio" name="taste" value="1" required> 1</label>
-<label><input type="radio" name="taste" value="2"> 2</label>
-<label><input type="radio" name="taste" value="3"> 3</label>
-<label><input type="radio" name="taste" value="4"> 4</label>
-<label><input type="radio" name="taste" value="5"> 5</label>
+    <input type="radio" id="star5" name="taste" value="5" required>
+    <label for="star5">★</label>
+
+    <input type="radio" id="star4" name="taste" value="4">
+    <label for="star4">★</label>
+
+    <input type="radio" id="star3" name="taste" value="3">
+    <label for="star3">★</label>
+
+    <input type="radio" id="star2" name="taste" value="2">
+    <label for="star2">★</label>
+
+    <input type="radio" id="star1" name="taste" value="1">
+    <label for="star1">★</label>
 
 </div>
 </div>
@@ -222,11 +231,23 @@ textarea{
 <button type="submit" class="btn">Надіслати</button>
 </div>
 
+</form>
+
 <div id="successMessage" class="success-message">
-Дякуємо за вашу відповідь ❤️
+
+    <h3>Дякуємо за вашу відповідь ❤️</h3>
+
+    <p style="margin:15px 0;">
+        Ваша думка допоможе нам зробити «Протеїнку» ще кращою.
+    </p>
+
+    <a href="index.html#order" class="btn">
+        Перейти до замовлення
+    </a>
+
 </div>
 
-</form>
+
 
 </div>
 </section>

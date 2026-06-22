@@ -42,7 +42,7 @@ if (surveyForm) {
             body: data
         });
 
-        surveyForm.reset();
+        surveyForm.style.display = 'none';
 
         if (successMessage) {
             successMessage.style.display = 'block';
