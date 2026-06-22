@@ -544,6 +544,25 @@ body{
     text-align:center;
 }
 
+.footer-survey{
+    margin-top:20px;
+}
+
+.footer-survey a{
+    color:var(--gold);
+    font-weight:700;
+    text-decoration:none;
+    transition:.3s;
+}
+
+.footer-survey a:hover{
+    opacity:.8;
+}
+
+.footer-survey .btn{
+    color:var(--dark);
+}
+
 @media(max-width:768px){
 
     .header-inner{

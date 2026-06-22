@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Опитування | Протеїнка</title>
+
+<link rel="stylesheet" href="css/style.css">
+
+<style>
+.survey-section{
+    padding:60px 0;
+}
+
+.survey-form{
+    max-width:900px;
+    margin:auto;
+    background:var(--card);
+    padding:35px;
+    border-radius:18px;
+    box-shadow:0 10px 30px rgba(58,36,22,.12);
+}
+
+.survey-intro{
+    margin-bottom:40px;
+    color:var(--muted);
+    line-height:1.6;
+}
+
+.question{
+    margin-bottom:35px;
+}
+
+.question h3{
+    margin-bottom:15px;
+}
+
+.option-group{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.option-group label{
+    cursor:pointer;
+}
+
+.checkbox-group{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+textarea{
+    width:100%;
+    min-height:140px;
+    padding:15px;
+    border:1px solid #d7c6ae;
+    border-radius:12px;
+    resize:vertical;
+}
+
+.submit-wrap{
+    text-align:center;
+    margin-top:40px;
+}
+
+.success-message{
+    display:none;
+    text-align:center;
+    margin-top:20px;
+    color:green;
+    font-weight:bold;
+}
+</style>
+
+</head>
+<body>
+
+<header class="header">
+    <div class="container">
+        <div class="header-inner">
+
+            <a href="index.html" class="logo">
+                <div class="logo-wrap">
+                    <img src="images/logo_sun.svg" class="logo-sun" alt="">
+                    <img src="images/logo_text.svg" class="logo-text" alt="">
+                </div>
+            </a>
+
+        </div>
+    </div>
+</header>
+
+<section class="survey-section">
+<div class="container">
+
+<form id="surveyForm" class="survey-form">
+
+<h2>Допоможіть нам вдосконалити «Протеїнку» 🌟</h2>
+
+<p class="survey-intro">
+Ми створюємо корисний перекус нового покоління і зараз тестуємо наш прототип.
+Опитування займе лише хвилину, але ваші відповіді безпосередньо вплинуть на фінальний продукт.
+</p>
+
+<div class="question">
+<h3>1. Наскільки вам сподобався смак прототипу?</h3>
+
+<div class="option-group">
+
+<label><input type="radio" name="taste" value="1" required> 1</label>
+<label><input type="radio" name="taste" value="2"> 2</label>
+<label><input type="radio" name="taste" value="3"> 3</label>
+<label><input type="radio" name="taste" value="4"> 4</label>
+<label><input type="radio" name="taste" value="5"> 5</label>
+
+</div>
+</div>
+
+<div class="question">
+<h3>2. Рівень солодкості</h3>
+
+<div class="option-group">
+
+<label><input type="radio" name="sweetness" value="Недостатньо солодка" required> Недостатньо солодка</label>
+
+<label><input type="radio" name="sweetness" value="Саме те"> Саме те</label>
+
+<label><input type="radio" name="sweetness" value="Занадто солодка"> Занадто солодка</label>
+
+</div>
+</div>
+
+<div class="question">
+<h3>3. Текстура та консистенція</h3>
+
+<div class="option-group">
+
+<label><input type="radio" name="texture" value="Занадто тверда" required> Занадто тверда / суха</label>
+
+<label><input type="radio" name="texture" value="Оптимальна"> Оптимальна</label>
+
+<label><input type="radio" name="texture" value="Занадто м'яка"> Занадто м'яка</label>
+
+<label><input type="radio" name="texture" value="Липне до зубів"> Липне до зубів</label>
+
+</div>
+</div>
+
+<div class="question">
+<h3>4. Розмір та форма</h3>
+
+<div class="option-group">
+
+<label><input type="radio" name="size" value="Ідеально" required> Ідеально</label>
+
+<label><input type="radio" name="size" value="Менша"> Менша (15–20 г)</label>
+
+<label><input type="radio" name="size" value="Більша"> Більша (30–35 г)</label>
+
+<label><input type="radio" name="size" value="Інша форма"> Інша форма</label>
+
+</div>
+</div>
+
+<div class="question">
+<h3>5. Формат упаковки</h3>
+
+<div class="option-group">
+
+<label><input type="radio" name="packaging" value="1 шт" required> Поштучно</label>
+
+<label><input type="radio" name="packaging" value="3 шт"> Кишеньковий сет</label>
+
+<label><input type="radio" name="packaging" value="6 шт"> Оптимальний сет</label>
+
+<label><input type="radio" name="packaging" value="9+ шт"> Великий бокс</label>
+
+</div>
+</div>
+
+<div class="question">
+<h3>6. Справедлива ціна</h3>
+
+<div class="option-group">
+
+<label><input type="radio" name="price" value="До 150" required> До 150 грн</label>
+
+<label><input type="radio" name="price" value="150-200"> 150–200 грн</label>
+
+<label><input type="radio" name="price" value="200-230"> 200–230 грн</label>
+
+</div>
+</div>
+
+<div class="question">
+<h3>7. Що для вас найважливіше? (до 2 варіантів)</h3>
+
+<div class="checkbox-group">
+
+<label><input type="checkbox" name="value" value="Білок та колаген"> Білок та колаген</label>
+
+<label><input type="checkbox" name="value" value="Натуральний склад"> Натуральний склад</label>
+
+<label><input type="checkbox" name="value" value="Низький вміст цукру"> Низький вміст цукру</label>
+
+<label><input type="checkbox" name="value" value="Швидкий перекус"> Швидкий перекус</label>
+
+<label><input type="checkbox" name="value" value="Соціальна місія"> Соціальна місія</label>
+
+</div>
+</div>
+
+<div class="question">
+<h3>Що б ви змінили або додали?</h3>
+
+<textarea name="comment"></textarea>
+</div>
+
+<div class="submit-wrap">
+<button type="submit" class="btn">Надіслати</button>
+</div>
+
+<div id="successMessage" class="success-message">
+Дякуємо за вашу відповідь ❤️
+</div>
+
+</form>
+
+</div>
+</section>
+
+<script src="js/survey.js"></script>
+
+</body>
+</html>
