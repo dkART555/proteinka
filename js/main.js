@@ -9,6 +9,24 @@ const orderForm = document.querySelector('.order-form');
 const SCRIPT_URL =
     'https://script.google.com/macros/s/AKfycbypLEImTucfBCqI27P53omAOFQHVZm1kI7t2fPHBRi6sfa7snlyuCo8uJNwnkDyJ5dPew/exec';
 
+window.addEventListener('pageshow', function() {
+    const navigationEntry = performance.getEntriesByType('navigation')[0];
+
+    if (navigationEntry && navigationEntry.type === 'reload') {
+        history.replaceState(
+            null,
+            '',
+            window.location.pathname + window.location.search
+        );
+
+        window.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: 'auto'
+        });
+    }
+});
+
 const constructorInputs = document.querySelectorAll(
     '.constructor-table input[data-pack-size]'
 );
