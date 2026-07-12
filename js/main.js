@@ -18,6 +18,48 @@ const summaryTotal = document.querySelector('.summary-total');
 
 const priceDisplays = document.querySelectorAll('[data-price-display]');
 
+const header = document.querySelector('.header');
+const orderSection = document.querySelector('#order');
+
+if (header && orderSection) {
+    const orderObserver = new IntersectionObserver(
+        function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    header.classList.add('header-hidden');
+                } else {
+                    header.classList.remove('header-hidden');
+                }
+            });
+        },
+        {
+            threshold: 0.15
+        }
+    );
+
+    orderObserver.observe(orderSection);
+}
+
+function scrollToElement(element) {
+    if (!element) {
+        return;
+    }
+
+    const header = document.querySelector('.header');
+    const headerHeight = header ? header.offsetHeight : 0;
+
+    const elementTop =
+        element.getBoundingClientRect().top +
+        window.pageYOffset -
+        headerHeight -
+        20;
+
+    window.scrollTo({
+        top: elementTop,
+        behavior: 'smooth'
+    });
+}
+
 function updateDisplayedPrices() {
     priceDisplays.forEach(function(element) {
         const packSize = Number(element.dataset.priceDisplay);
@@ -119,10 +161,38 @@ if (orderForm) {
 
         const orderData = getOrderData();
 
-        if (!name || !phone || orderData.items.length === 0) {
-            alert(
-                'Будь ласка, заповніть ім’я, телефон та оберіть замовлення.'
-            );
+        const nameInput = orderForm.querySelector('input[name="name"]');
+        const phoneInput = orderForm.querySelector('input[name="phone"]');
+        const orderConstructor = orderForm.querySelector(
+            '.order-constructor'
+        );
+
+        if (!name) {
+            alert('Будь ласка, введіть ім’я.');
+
+            if (nameInput) {
+                nameInput.focus();
+                scrollToElement(nameInput);
+            }
+
+            return;
+        }
+
+        if (!phone) {
+            alert('Будь ласка, введіть номер телефону.');
+
+            if (phoneInput) {
+                phoneInput.focus();
+                scrollToElement(phoneInput);
+            }
+
+            return;
+        }
+
+        if (orderData.items.length === 0) {
+            alert('Будь ласка, оберіть хоча б один набір.');
+
+            scrollToElement(orderConstructor);
             return;
         }
 
@@ -143,12 +213,15 @@ if (orderForm) {
 
         const data = new URLSearchParams();
 
+        data.append('type', 'order');
         data.append('name', name);
         data.append('phone', phone);
         data.append('order', orderText);
         data.append('total', String(orderData.total));
 
-        const submitButton = orderForm.querySelector('button[type="submit"]');
+        const submitButton = orderForm.querySelector(
+            'button[type="submit"]'
+        );
 
         if (submitButton) {
             submitButton.disabled = true;
@@ -169,7 +242,10 @@ if (orderForm) {
                 updateSummary();
             })
             .catch(function(error) {
-                console.error('Помилка відправлення замовлення:', error);
+                console.error(
+                    'Помилка відправлення замовлення:',
+                    error
+                );
 
                 alert(
                     'Не вдалося надіслати заявку. Перевірте інтернет і спробуйте ще раз.'

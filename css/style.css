@@ -596,6 +596,28 @@ body{
     flex-wrap:wrap;
 }
 
+.order-form input:focus {
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(201, 146, 60, 0.18);
+}
+
+.order-constructor {
+    scroll-margin-top: 220px;
+}
+
+.order-form > input {
+    scroll-margin-top: 220px;
+}
+
+.header {
+    transition: transform 0.35s ease;
+}
+
+.header.header-hidden {
+    transform: translateY(-100%);
+}
+
 @media(max-width:768px){
 
     .header-inner{
