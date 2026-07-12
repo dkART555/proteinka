@@ -7,7 +7,7 @@ const PRICES = {
 const orderForm = document.querySelector('.order-form');
 
 const SCRIPT_URL =
-    'https://script.google.com/macros/s/AKfycbz13d8LrkE3mb9lJZQwakQKtAfRx-6AcbxzbaTvwhH8P8i9R5uleBrjm7--J5SUvhzvSA/exec';
+    'https://script.google.com/macros/s/AKfycbypLEImTucfBCqI27P53omAOFQHVZm1kI7t2fPHBRi6sfa7snlyuCo8uJNwnkDyJ5dPew/exec';
 
 const constructorInputs = document.querySelectorAll(
     '.constructor-table input[data-pack-size]'
