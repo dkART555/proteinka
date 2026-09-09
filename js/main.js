@@ -1,282 +1,363 @@
-const PRICES = {
-    3: 80,
-    6: 150,
-    9: 210
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbypLEImTucfBCqI27P53omAOFQHVZm1kI7t2fPHBRi6sfa7snlyuCo8uJNwnkDyJ5dPew/exec';
+const FLAVORS = ['Кокосова', 'Шоколадна', 'Керобова'];
+const FLAVOR_IMAGES = {
+    Кокосова: 'images/flavor-1.jpg',
+    Шоколадна: 'images/flavor-2.jpg',
+    Керобова: 'images/flavor-3.jpg'
 };
+const STORAGE_KEY = 'proteinka-cart';
 
 const orderForm = document.querySelector('.order-form');
-
-const SCRIPT_URL =
-    'https://script.google.com/macros/s/AKfycbypLEImTucfBCqI27P53omAOFQHVZm1kI7t2fPHBRi6sfa7snlyuCo8uJNwnkDyJ5dPew/exec';
-
-window.addEventListener('pageshow', function() {
-    const navigationEntry = performance.getEntriesByType('navigation')[0];
-
-    if (navigationEntry && navigationEntry.type === 'reload') {
-        history.replaceState(
-            null,
-            '',
-            window.location.pathname + window.location.search
-        );
-
-        window.scrollTo({
-            top: 0,
-            left: 0,
-            behavior: 'auto'
-        });
-    }
-});
-
-const constructorInputs = document.querySelectorAll(
-    '.constructor-table input[data-pack-size]'
-);
-
-const summaryList = document.querySelector('.summary-list');
+const cartDrawer = document.querySelector('.cart-drawer');
+const cartOverlay = document.querySelector('.cart-overlay');
+const cartContent = document.querySelector('.cart-content');
+const cartView = document.querySelector('.cart-view');
+const cartItems = document.querySelector('.cart-items');
+const cartEmpty = document.querySelector('.cart-empty');
+const cartPricing = document.querySelector('.cart-pricing');
+const cartHint = document.querySelector('.cart-hint');
 const summaryTotal = document.querySelector('.summary-total');
+const cartCount = document.querySelector('.cart-count');
+const cartHeaderTotal = document.querySelector('.cart-header-total');
+const addButtons = document.querySelectorAll('.add-to-cart');
+const cartToast = document.querySelector('.cart-toast');
 
-const priceDisplays = document.querySelectorAll('[data-price-display]');
+let cart = loadCart();
+let toastTimer;
 
-const header = document.querySelector('.header');
-const orderSection = document.querySelector('#order');
-
-if (header && orderSection) {
-    const orderObserver = new IntersectionObserver(
-        function(entries) {
-            entries.forEach(function(entry) {
-                if (entry.isIntersecting) {
-                    header.classList.add('header-hidden');
-                } else {
-                    header.classList.remove('header-hidden');
-                }
-            });
-        },
-        {
-            threshold: 0.15
-        }
-    );
-
-    orderObserver.observe(orderSection);
+function createEmptyCart() {
+    return { Кокосова: 0, Шоколадна: 0, Керобова: 0 };
 }
 
-function scrollToElement(element) {
-    if (!element) {
-        return;
+function loadCart() {
+    const emptyCart = createEmptyCart();
+
+    try {
+        const savedCart = JSON.parse(localStorage.getItem(STORAGE_KEY));
+
+        FLAVORS.forEach(function(flavor) {
+            const quantity = Number(savedCart && savedCart[flavor]);
+            emptyCart[flavor] = Number.isInteger(quantity) && quantity > 0 ? quantity : 0;
+        });
+    } catch (error) {
+        console.warn('Не вдалося завантажити кошик:', error);
     }
 
-    const header = document.querySelector('.header');
-    const headerHeight = header ? header.offsetHeight : 0;
-
-    const elementTop =
-        element.getBoundingClientRect().top +
-        window.pageYOffset -
-        headerHeight -
-        20;
-
-    window.scrollTo({
-        top: elementTop,
-        behavior: 'smooth'
-    });
+    return emptyCart;
 }
 
-function updateDisplayedPrices() {
-    priceDisplays.forEach(function(element) {
-        const packSize = Number(element.dataset.priceDisplay);
-        const price = PRICES[packSize];
-
-        if (price !== undefined) {
-            element.textContent = price + ' грн';
-        }
-    });
+function saveCart() {
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(cart));
+    } catch (error) {
+        console.warn('Не вдалося зберегти кошик:', error);
+    }
 }
 
-function getOrderData() {
-    const items = [];
-    let total = 0;
+function getTotalQuantity() {
+    return FLAVORS.reduce(function(total, flavor) {
+        return total + cart[flavor];
+    }, 0);
+}
 
-    constructorInputs.forEach(function(input) {
-        const quantity = Number(input.value);
+function getSelectedFlavorCount() {
+    return FLAVORS.filter(function(flavor) {
+        return cart[flavor] > 0;
+    }).length;
+}
 
-        if (quantity <= 0) {
-            return;
-        }
+function getUnitPrice(quantity) {
+    if (quantity >= 10) return 25;
+    if (quantity >= 6) return 27;
+    return quantity > 0 ? 30 : 0;
+}
 
-        const flavor = input.dataset.flavor;
-        const pack = input.dataset.pack;
-        const packSize = Number(input.dataset.packSize);
-        const price = PRICES[packSize];
-
-        if (price === undefined) {
-            console.error('Не знайдена ціна для набору:', packSize);
-            return;
-        }
-
-        const itemTotal = quantity * price;
-
-        items.push({
-            flavor,
-            pack,
-            packSize,
-            quantity,
-            price,
-            itemTotal
-        });
-
-        total += itemTotal;
-    });
+function getCartData() {
+    const quantity = getTotalQuantity();
+    const unitPrice = getUnitPrice(quantity);
 
     return {
-        items,
-        total
+        quantity,
+        unitPrice,
+        total: quantity * unitPrice
     };
 }
 
-function updateSummary() {
-    if (!summaryList || !summaryTotal) {
-        return;
-    }
-
-    const orderData = getOrderData();
-
-    if (orderData.items.length === 0) {
-        summaryList.textContent = 'Замовлення ще не вибрано.';
-        summaryTotal.textContent = 'Разом: 0 грн';
-        return;
-    }
-
-    summaryList.innerHTML = '';
-
-    orderData.items.forEach(function(item) {
-        const line = document.createElement('div');
-
-        line.textContent =
-            item.flavor +
-            ' — ' +
-            item.pack +
-            ' × ' +
-            item.quantity +
-            ' = ' +
-            item.itemTotal +
-            ' грн';
-
-        summaryList.appendChild(line);
-    });
-
-    summaryTotal.textContent = 'Разом: ' + orderData.total + ' грн';
+function getPriceHint(quantity) {
+    if (quantity === 0) return '';
+    if (quantity < 6) return 'Додайте ще ' + (6 - quantity) + ' шт. — і кожна коштуватиме 27 грн.';
+    if (quantity < 10) return 'Додайте ще ' + (10 - quantity) + ' шт. — і кожна коштуватиме 25 грн.';
+    return 'Для вас діє найвигідніша ціна — 25 грн/шт.';
 }
 
-constructorInputs.forEach(function(input) {
-    input.addEventListener('input', updateSummary);
+function openCart() {
+    if (!cartDrawer || !cartOverlay) return;
+
+    showCartView();
+    cartOverlay.hidden = false;
+    cartDrawer.classList.add('is-open');
+    cartOverlay.classList.add('is-visible');
+    cartDrawer.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('cart-is-open');
+
+    document.querySelectorAll('[data-cart-open]').forEach(function(button) {
+        button.setAttribute('aria-expanded', 'true');
+    });
+
+    const closeButton = cartDrawer.querySelector('.cart-close');
+    if (closeButton) closeButton.focus();
+}
+
+function showCartView() {
+    if (cartView) cartView.hidden = false;
+}
+
+function closeCart() {
+    if (!cartDrawer || !cartOverlay) return;
+
+    cartDrawer.classList.remove('is-open');
+    cartOverlay.classList.remove('is-visible');
+    cartDrawer.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('cart-is-open');
+
+    document.querySelectorAll('[data-cart-open]').forEach(function(button) {
+        button.setAttribute('aria-expanded', 'false');
+    });
+}
+
+function changeQuantity(flavor, amount) {
+    if (!FLAVORS.includes(flavor)) return;
+
+    cart[flavor] = Math.max(0, cart[flavor] + amount);
+    saveCart();
+    renderCart();
+}
+
+function showCartMessage(message) {
+    if (!cartToast) return;
+
+    window.clearTimeout(toastTimer);
+    cartToast.textContent = message;
+    cartToast.hidden = false;
+
+    window.requestAnimationFrame(function() {
+        cartToast.classList.add('is-visible');
+    });
+
+    toastTimer = window.setTimeout(function() {
+        cartToast.classList.remove('is-visible');
+        window.setTimeout(function() {
+            if (!cartToast.classList.contains('is-visible')) cartToast.hidden = true;
+        }, 250);
+    }, 1500);
+}
+
+function removeFlavor(flavor) {
+    if (!FLAVORS.includes(flavor)) return;
+
+    cart[flavor] = 0;
+    saveCart();
+    renderCart();
+}
+
+function createQuantityButton(symbol, label, flavor, amount) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'quantity-button';
+    button.textContent = symbol;
+    button.setAttribute('aria-label', label + ': ' + flavor);
+    button.addEventListener('click', function() {
+        changeQuantity(flavor, amount);
+    });
+    return button;
+}
+
+function createCartRow(flavor, quantity, unitPrice) {
+    const row = document.createElement('div');
+    row.className = 'cart-item';
+
+    const image = document.createElement('img');
+    image.className = 'cart-item-image';
+    image.src = FLAVOR_IMAGES[flavor];
+    image.alt = '';
+
+    const details = document.createElement('div');
+    details.className = 'cart-item-details';
+
+    const name = document.createElement('strong');
+    name.className = 'cart-item-name';
+    name.textContent = flavor;
+
+    const price = document.createElement('span');
+    price.className = 'cart-item-price';
+    price.textContent = quantity + ' × ' + unitPrice + ' грн = ' + (quantity * unitPrice) + ' грн';
+
+    const removeButton = document.createElement('button');
+    removeButton.type = 'button';
+    removeButton.className = 'cart-remove';
+    removeButton.textContent = 'Видалити';
+    removeButton.addEventListener('click', function() {
+        removeFlavor(flavor);
+    });
+
+    details.append(name, price, removeButton);
+
+    const controls = document.createElement('div');
+    controls.className = 'quantity-controls';
+    const minus = createQuantityButton('−', 'Зменшити кількість', flavor, -1);
+    const value = document.createElement('span');
+    value.className = 'quantity-value';
+    value.textContent = quantity;
+    const plus = createQuantityButton('+', 'Збільшити кількість', flavor, 1);
+    controls.append(minus, value, plus);
+
+    row.append(image, details, controls);
+    return row;
+}
+
+function renderCardControls() {
+    FLAVORS.forEach(function(flavor) {
+        const quantity = cart[flavor];
+        const addButton = document.querySelector('.add-to-cart[data-flavor="' + flavor + '"]');
+
+        if (addButton) {
+            addButton.classList.toggle('in-cart', quantity > 0);
+            addButton.textContent = quantity > 0 ? 'Додати ще (' + quantity + ')' : 'Додати в кошик';
+        }
+    });
+}
+
+function renderCart() {
+    if (!cartItems || !summaryTotal) return;
+
+    const cartData = getCartData();
+    cartItems.innerHTML = '';
+
+    FLAVORS.forEach(function(flavor) {
+        if (cart[flavor] > 0) {
+            cartItems.appendChild(createCartRow(flavor, cart[flavor], cartData.unitPrice));
+        }
+    });
+
+    if (cartEmpty) cartEmpty.hidden = cartData.quantity > 0;
+    if (cartContent) cartContent.hidden = cartData.quantity === 0;
+    if (cartCount) cartCount.textContent = cartData.quantity;
+    if (cartHeaderTotal) cartHeaderTotal.textContent = cartData.total + ' грн';
+    if (cartPricing) cartPricing.textContent = 'Усього: ' + cartData.quantity + ' шт. × ' + cartData.unitPrice + ' грн';
+    if (cartHint) cartHint.textContent = getPriceHint(cartData.quantity);
+    summaryTotal.textContent = 'Разом: ' + cartData.total + ' грн';
+
+    const displayedUnitPrice = cartData.unitPrice || 30;
+    document.querySelectorAll('.flavor-price').forEach(function(price) {
+        price.textContent = 'Поточна ціна: ' + displayedUnitPrice + ' грн/шт.';
+    });
+
+    if (cartData.quantity === 0 && orderForm) {
+        showCartView();
+    }
+
+    renderCardControls();
+}
+
+addButtons.forEach(function(button) {
+    button.addEventListener('click', function() {
+        const flavor = button.dataset.flavor;
+        const isNewFlavor = cart[flavor] === 0;
+
+        changeQuantity(flavor, 1);
+
+        if (isNewFlavor && getSelectedFlavorCount() === FLAVORS.length) {
+            openCart();
+        } else {
+            showCartMessage(flavor + ': ' + cart[flavor] + ' шт. у кошику ✓');
+        }
+    });
+});
+
+document.querySelectorAll('[data-cart-open]').forEach(function(button) {
+    button.addEventListener('click', openCart);
+});
+
+document.querySelectorAll('[data-cart-close]').forEach(function(button) {
+    button.addEventListener('click', closeCart);
+});
+
+document.querySelectorAll('[data-cart-continue]').forEach(function(button) {
+    button.addEventListener('click', function() {
+        closeCart();
+        document.querySelector('#flavors').scrollIntoView({ behavior: 'smooth' });
+    });
+});
+
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape' && cartDrawer && cartDrawer.classList.contains('is-open')) {
+        closeCart();
+    }
 });
 
 if (orderForm) {
     orderForm.addEventListener('submit', function(event) {
         event.preventDefault();
 
+        const cartData = getCartData();
         const formData = new FormData(orderForm);
-
         const name = String(formData.get('name') || '').trim();
         const phone = String(formData.get('phone') || '').trim();
-
-        const orderData = getOrderData();
-
         const nameInput = orderForm.querySelector('input[name="name"]');
         const phoneInput = orderForm.querySelector('input[name="phone"]');
-        const orderConstructor = orderForm.querySelector(
-            '.order-constructor'
-        );
+
+        if (cartData.quantity === 0) {
+            alert('Будь ласка, додайте хоча б одну цукерку до кошика.');
+            return;
+        }
 
         if (!name) {
             alert('Будь ласка, введіть ім’я.');
-
-            if (nameInput) {
-                nameInput.focus();
-                scrollToElement(nameInput);
-            }
-
+            nameInput.focus();
             return;
         }
 
-        if (!phone) {
-            alert('Будь ласка, введіть номер телефону.');
-
-            if (phoneInput) {
-                phoneInput.focus();
-                scrollToElement(phoneInput);
-            }
-
+        if (!phone || phone.replace(/\D/g, '').length < 7) {
+            alert('Будь ласка, введіть коректний номер телефону.');
+            phoneInput.focus();
             return;
         }
 
-        if (orderData.items.length === 0) {
-            alert('Будь ласка, оберіть хоча б один набір.');
-
-            scrollToElement(orderConstructor);
-            return;
-        }
-
-        const orderText = orderData.items
-            .map(function(item) {
-                return (
-                    item.flavor +
-                    ' - ' +
-                    item.pack +
-                    ' x ' +
-                    item.quantity +
-                    ' = ' +
-                    item.itemTotal +
-                    ' грн'
-                );
-            })
-            .join('; ');
+        const orderText = FLAVORS
+            .filter(function(flavor) { return cart[flavor] > 0; })
+            .map(function(flavor) { return flavor + ' x ' + cart[flavor]; })
+            .join('; ') + '; усього ' + cartData.quantity + ' шт.; ціна ' + cartData.unitPrice + ' грн/шт.';
 
         const data = new URLSearchParams();
-
         data.append('type', 'order');
         data.append('name', name);
         data.append('phone', phone);
         data.append('order', orderText);
-        data.append('total', String(orderData.total));
+        data.append('total', String(cartData.total));
 
-        const submitButton = orderForm.querySelector(
-            'button[type="submit"]'
-        );
+        const submitButton = orderForm.querySelector('button[type="submit"]');
+        submitButton.disabled = true;
+        submitButton.textContent = 'Надсилаємо...';
 
-        if (submitButton) {
-            submitButton.disabled = true;
-            submitButton.textContent = 'Надсилаємо...';
-        }
-
-        fetch(SCRIPT_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            body: data
-        })
+        fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: data })
             .then(function() {
-                alert(
-                    'Дякуємо! Ваша заявка прийнята. Ми зв’яжемося з вами найближчим часом.'
-                );
-
+                alert('Дякуємо! Ваша заявка прийнята. Ми зв’яжемося з вами найближчим часом.');
                 orderForm.reset();
-                updateSummary();
+                showCartView();
+                cart = createEmptyCart();
+                saveCart();
+                renderCart();
+                closeCart();
             })
             .catch(function(error) {
-                console.error(
-                    'Помилка відправлення замовлення:',
-                    error
-                );
-
-                alert(
-                    'Не вдалося надіслати заявку. Перевірте інтернет і спробуйте ще раз.'
-                );
+                console.error('Помилка відправлення замовлення:', error);
+                alert('Не вдалося надіслати заявку. Перевірте інтернет і спробуйте ще раз.');
             })
             .finally(function() {
-                if (submitButton) {
-                    submitButton.disabled = false;
-                    submitButton.textContent = 'Надіслати заявку';
-                }
+                submitButton.disabled = false;
+                submitButton.textContent = 'Надіслати заявку';
             });
     });
 }
 
-updateDisplayedPrices();
-updateSummary();
+renderCart();

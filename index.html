@@ -17,9 +17,13 @@
             </div>
         </a>
 
-        <a href="#order" class="btn">
-            Замовити
-        </a>
+        <button type="button" class="btn cart-button" data-cart-open aria-controls="cartDrawer" aria-expanded="false">
+            <span class="cart-label">Кошик</span>
+            <span class="cart-compact">
+                <span class="cart-count" aria-label="Кількість товарів">0</span>
+                <span class="cart-header-total">0 грн</span>
+            </span>
+        </button>
     </div>
 </header>
 
@@ -37,8 +41,8 @@
 
             <div class="hero-buttons">
 
-            <a href="#order" class="btn hero-btn">
-                Замовити набір
+            <a href="#flavors" class="btn hero-btn">
+                Купити
             </a>
 
             <a href="survey.html" class="btn hero-btn">
@@ -58,7 +62,37 @@
     </div>
 </section>
 
-<section class="flavors">
+<section class="packs" id="pricing">
+    <div class="container">
+
+        <h2>Ціна залежить від кількості</h2>
+
+        <div class="packs-grid">
+
+            <div class="pack-card">
+                <h3>1–5 цукерок</h3>
+                <div class="count">за одну цукерку</div>
+                <div class="price">30 грн</div>
+            </div>
+
+            <div class="pack-card popular">
+                <h3>6–9 цукерок</h3>
+                <div class="count">за одну цукерку</div>
+                <div class="price">27 грн</div>
+            </div>
+
+            <div class="pack-card">
+                <h3>Від 10 цукерок</h3>
+                <div class="count">за одну цукерку</div>
+                <div class="price">25 грн</div>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+<section class="flavors" id="flavors">
     <div class="container">
 
         <h2>Наші смаки</h2>
@@ -71,7 +105,11 @@
                     <span>Фото смаку</span>
                 </div>
                 <h3>Кокосова</h3>
-                
+                <div class="flavor-buy">
+                    <div class="flavor-price">Поточна ціна: 30 грн/шт.</div>
+                    <button type="button" class="btn add-to-cart" data-flavor="Кокосова">Додати в кошик</button>
+                </div>
+
                     <p>
                         Ніжна, світла і трохи схожа на літо.
                     </p>
@@ -80,7 +118,7 @@
                         Легка текстура та природна солодкість роблять її бездоганним перекусом до кави, 
                         після тренування або просто посеред насиченого дня.
                     </p>
-                
+
             </div>
 
             <div class="flavor-card">
@@ -89,7 +127,11 @@
                     <span>Фото смаку</span>
                 </div>
                 <h3>Шоколадна</h3>
-                
+                <div class="flavor-buy">
+                    <div class="flavor-price">Поточна ціна: 30 грн/шт.</div>
+                    <button type="button" class="btn add-to-cart" data-flavor="Шоколадна">Додати в кошик</button>
+                </div>
+
                     <p>
                         Глибока та насичена.
                     </p>
@@ -98,7 +140,7 @@
                         де немає нічого зайвого. Це гармонія насиченого шоколадного характеру та приємної ягідної кислинки.
                         Смак, який дарує задоволення справжнього десерту, але створений для того, щоб підтримувати твою енергію та активність.
                     </p>
-                
+
             </div>
 
             <div class="flavor-card">
@@ -107,7 +149,11 @@
                     <span>Фото смаку</span>
                 </div>
                 <h3>Керобова</h3>
-                
+                <div class="flavor-buy">
+                    <div class="flavor-price">Поточна ціна: 30 грн/шт.</div>
+                    <button type="button" class="btn add-to-cart" data-flavor="Керобова">Додати в кошик</button>
+                </div>
+
                     <p>
                         Тепла, затишна та інтригуюча.
                     </p>
@@ -117,7 +163,7 @@
                         Цей перекус нагадує щось дивовижно нове, але водночас дуже рідне й комфортне.
                         Створено для тих, хто любить відкривати нові поєднання.
                     </p>
-                
+
             </div>
 
         </div>
@@ -264,40 +310,6 @@
     </div>
 </section>
 
-<section class="packs">
-    <div class="container">
-
-        <h2>Оберіть свій набір</h2>
-
-        <div class="packs-grid">
-
-            <div class="pack-card">
-                <h3>Старт</h3>
-                <div class="count">3 шт</div>
-                <div class="price" data-price-display="3"></div>
-                <a href="#order" class="btn">Замовити</a>
-            </div>
-
-            <div class="pack-card popular">
-                <div class="badge">Хіт продажів</div>
-                <h3>Оптимальний</h3>
-                <div class="count">6 шт</div>
-                <div class="price" data-price-display="6"></div>
-                <a href="#order" class="btn">Замовити</a>
-            </div>
-
-            <div class="pack-card">
-                <h3>Сімейний</h3>
-                <div class="count">9 шт</div>
-                <div class="price" data-price-display="9"></div>
-                <a href="#order" class="btn">Замовити</a>
-            </div>
-
-        </div>
-
-    </div>
-</section>
-
 <section class="delivery">
     <div class="container">
 
@@ -354,7 +366,7 @@
 
             <details class="faq-item">
                 <summary>Як оформити замовлення?</summary>
-                <p>Оберіть набір у формі нижче, залиште ім’я та телефон — ми зв’яжемося з вами для уточнення деталей.</p>
+                <p>Додайте улюблені смаки до кошика, вкажіть ім’я та телефон — ми зв’яжемося з вами для уточнення деталей.</p>
             </details>
 
         </div>
@@ -362,74 +374,55 @@
     </div>
 </section>
 
-<section class="order" id="order">
-    <div class="container">
+</main>
 
-        <h2>Замовити Протеїнку</h2>
+<div class="cart-overlay" data-cart-close hidden></div>
 
-        <p class="order-text">
-            Оберіть набір та залиште заявку. Ми зв’яжемося з вами для уточнення деталей замовлення.
-        </p>
+<aside class="cart-drawer" id="cartDrawer" aria-labelledby="cartTitle" aria-hidden="true">
+    <div class="cart-drawer-header">
+        <div>
+            <h2 id="cartTitle">Кошик</h2>
+        </div>
+        <button type="button" class="cart-close" data-cart-close aria-label="Закрити кошик">×</button>
+    </div>
 
-        <form class="order-form" novalidate>
-            <input type="text" name="name" placeholder="Ваше ім’я" required>
-            <input type="tel" name="phone" placeholder="Ваш телефон" required>
+    <div class="cart-drawer-body">
+        <div class="cart-empty">
+            <strong>Кошик порожній</strong>
+            <span>Оберіть смак і додайте хоча б одну цукерку.</span>
+            <button type="button" class="btn" data-cart-continue>Обрати смаки</button>
+        </div>
 
-            <div class="order-constructor">
+        <div class="cart-content" hidden>
+            <form class="order-form cart-view inline-order-form" novalidate>
+                <div class="cart-items-scroll">
+                    <div class="cart-items" aria-live="polite"></div>
 
-                <h3>Складіть замовлення</h3>
-
-                <div class="constructor-table">
-
-                     <div class="constructor-row constructor-head">
-                        <div>Смак</div>
-                        <div>3 шт</div>
-                        <div>6 шт</div>
-                        <div>9 шт</div>
+                    <div class="inline-contact-fields">
+                        <h3>Контактні дані</h3>
+                        <input type="text" name="name" placeholder="Ваше ім’я" autocomplete="name" required>
+                        <input type="tel" name="phone" placeholder="Ваш телефон" autocomplete="tel" required>
                     </div>
-
-                    <div class="constructor-row">
-                        <div>Кокосова</div>
-                        <input type="number" min="0" value="0" data-flavor="Кокосова" data-pack="3 шт" data-pack-size="3">
-                        <input type="number" min="0" value="0" data-flavor="Кокосова" data-pack="6 шт" data-pack-size="6">
-                        <input type="number" min="0" value="0" data-flavor="Кокосова" data-pack="9 шт" data-pack-size="9">
-                    </div>
-
-                    <div class="constructor-row">
-                        <div>Шоколадна</div>
-                        <input type="number" min="0" value="0" data-flavor="Шоколадна" data-pack="3 шт" data-pack-size="3">
-                        <input type="number" min="0" value="0" data-flavor="Шоколадна" data-pack="6 шт" data-pack-size="6">
-                        <input type="number" min="0" value="0" data-flavor="Шоколадна" data-pack="9 шт" data-pack-size="9">
-                    </div>
-
-                    <div class="constructor-row">
-                        <div>Керобова</div>
-                        <input type="number" min="0" value="0" data-flavor="Керобова" data-pack="3 шт" data-pack-size="3">
-                        <input type="number" min="0" value="0" data-flavor="Керобова" data-pack="6 шт" data-pack-size="6">
-                        <input type="number" min="0" value="0" data-flavor="Керобова" data-pack="9 шт" data-pack-size="9">
-                    </div>
-
                 </div>
 
-                <div class="order-summary">
-            <h3>Ваше замовлення</h3>
-        <div class="summary-list">Замовлення ще не вибрано.</div>
-        <div class="summary-total">Разом: 0 грн</div>
+                <div class="cart-footer">
+                    <div class="order-summary">
+                        <div class="cart-pricing"></div>
+                        <div class="cart-hint"></div>
+                        <div class="summary-total">Разом: 0 грн</div>
+                    </div>
+
+                    <div class="cart-actions">
+                        <button type="submit" class="btn">Надіслати заявку</button>
+                        <button type="button" class="continue-shopping" data-cart-continue>Продовжити покупки</button>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
+</aside>
 
-</div>
-
-            <button type="submit" class="btn">
-                Надіслати заявку
-            </button>
-        </form>
-
-    </div>
-</section>
-
-
-
-</main>
+<div class="cart-toast" role="status" aria-live="polite" hidden></div>
 
 <footer class="footer">
     <div class="container">
