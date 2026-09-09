@@ -6,6 +6,7 @@ const FLAVOR_IMAGES = {
     Керобова: 'images/flavor-3.jpg'
 };
 const STORAGE_KEY = 'proteinka-cart';
+const CART_HISTORY_KEY = 'proteinkaCartOpen';
 
 const orderForm = document.querySelector('.order-form');
 const cartDrawer = document.querySelector('.cart-drawer');
@@ -90,8 +91,20 @@ function getPriceHint(quantity) {
     return 'Для вас діє найвигідніша ціна — 25 грн/шт.';
 }
 
-function openCart() {
+function openCart(options) {
     if (!cartDrawer || !cartOverlay) return;
+
+    const fromHistory = options && options.fromHistory;
+
+    if (!fromHistory && !cartDrawer.classList.contains('is-open')) {
+        const currentState = history.state || {};
+
+        if (!currentState[CART_HISTORY_KEY]) {
+            const cartState = Object.assign({}, currentState);
+            cartState[CART_HISTORY_KEY] = true;
+            history.pushState(cartState, '', window.location.href);
+        }
+    }
 
     showCartView();
     cartOverlay.hidden = false;
@@ -112,8 +125,11 @@ function showCartView() {
     if (cartView) cartView.hidden = false;
 }
 
-function closeCart() {
+function closeCart(options) {
     if (!cartDrawer || !cartOverlay) return;
+
+    const fromHistory = options && options.fromHistory;
+    const wasOpen = cartDrawer.classList.contains('is-open');
 
     cartDrawer.classList.remove('is-open');
     cartOverlay.classList.remove('is-visible');
@@ -123,6 +139,10 @@ function closeCart() {
     document.querySelectorAll('[data-cart-open]').forEach(function(button) {
         button.setAttribute('aria-expanded', 'false');
     });
+
+    if (!fromHistory && wasOpen && history.state && history.state[CART_HISTORY_KEY]) {
+        history.back();
+    }
 }
 
 function changeQuantity(flavor, amount) {
@@ -292,6 +312,14 @@ document.querySelectorAll('[data-cart-continue]').forEach(function(button) {
 document.addEventListener('keydown', function(event) {
     if (event.key === 'Escape' && cartDrawer && cartDrawer.classList.contains('is-open')) {
         closeCart();
+    }
+});
+
+window.addEventListener('popstate', function(event) {
+    if (event.state && event.state[CART_HISTORY_KEY]) {
+        openCart({ fromHistory: true });
+    } else {
+        closeCart({ fromHistory: true });
     }
 });
 
