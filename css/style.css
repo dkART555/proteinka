@@ -1169,6 +1169,16 @@ body.cart-is-open{
         padding-top:10px;
         padding-bottom:10px;
     }
+
+    .quantity-controls{
+        gap:7px;
+    }
+
+    .quantity-button{
+        width:40px;
+        height:40px;
+        font-size:24px;
+    }
 }
 
 @media(max-width:520px){
@@ -1218,15 +1228,6 @@ body.cart-is-open{
 
     .cart-remove{
         font-size:11px;
-    }
-
-    .quantity-controls{
-        gap:4px;
-    }
-
-    .quantity-button{
-        width:28px;
-        height:28px;
     }
 
 }
